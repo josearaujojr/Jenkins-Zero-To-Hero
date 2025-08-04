@@ -1,13 +1,14 @@
-# You can change this base image to anything else
-# But make sure to use the correct version of Java
-FROM adoptopenjdk/openjdk11:alpine-jre
+# Usando imagem atual e mantida
+FROM eclipse-temurin:11-jre-alpine
 
-# Simply the artifact path
+# Define o argumento com o caminho do JAR
 ARG artifact=target/spring-boot-web.jar
 
 WORKDIR /opt/app
 
+# Copia o JAR para o container
 COPY ${artifact} app.jar
 
-# This should not be changed
-ENTRYPOINT ["java","-jar","app.jar"]
+# Comando de entrada
+ENTRYPOINT ["java", "-jar", "app.jar"]
+
