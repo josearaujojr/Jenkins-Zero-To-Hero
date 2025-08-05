@@ -5,7 +5,6 @@ pipeline {
     stage('Checkout') {
       steps {
         sh 'echo passed'
-        // git branch: 'main', url: 'https://github.com/iam-veeramalla/Jenkins-Zero-To-Hero.git'
       }
     }
 
@@ -50,29 +49,13 @@ pipeline {
       }
     }
 
-    stage('Update Deployment File') {
-      environment {
-        GIT_REPO_NAME = "Jenkins-Zero-To-Hero"
-        GIT_USER_NAME = "josearaujojr"
-      }
+    stage('Deploy to Kubernetes') {
       steps {
-        withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
-          sh '''
-            cd java-maven-sonar-argocd-helm-k8s
-            git checkout main
-            git pull --rebase
-
-            git config user.email "jose.almino.jr@gmail.com"
-            git config user.name "Jose Almino"
-
-            BUILD_NUMBER=${BUILD_NUMBER}
-            sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" spring-boot-app-manifests/deployment.yml
-
-            git add spring-boot-app-manifests/deployment.yml
-            git commit -m "Update deployment image to version ${BUILD_NUMBER}" || echo "Nothing to commit"
-            git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
-          '''
-        }
+        sh """
+          echo 'Atualizando imagem no deployment...'
+          kubectl set image deployment/spring-boot-app spring-boot-app=josearaujojr/ultimate-cicd:${BUILD_NUMBER} -n default
+          echo 'Atualização aplicada.'
+        """
       }
     }
   }
