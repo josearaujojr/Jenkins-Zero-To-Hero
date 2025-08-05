@@ -60,6 +60,7 @@ pipeline {
           sh '''
             cd java-maven-sonar-argocd-helm-k8s
             git checkout main
+            git pull --rebase
 
             git config user.email "jose.almino.jr@gmail.com"
             git config user.name "Jose Almino"
