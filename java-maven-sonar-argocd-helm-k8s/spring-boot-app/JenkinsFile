@@ -61,11 +61,10 @@ pipeline {
 
     stage('Deploy to Kubernetes') {
       steps {
-        sh """
-          echo 'Atualizando imagem no deployment...'
+        sh '''
+          kubectl apply -f java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml -n default
           kubectl set image deployment/spring-boot-app spring-boot-app=josearaujojr/ultimate-cicd:${BUILD_NUMBER} -n default
-          echo 'Atualização aplicada.'
-        """
+        '''
       }
     }
   }
