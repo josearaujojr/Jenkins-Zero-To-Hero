@@ -1,4 +1,8 @@
 pipeline {
+  environment {
+    KUBECONFIG = '/var/lib/jenkins/.kube/config'
+  }
+
   agent any
 
   stages {
@@ -46,6 +50,12 @@ pipeline {
             dockerImage.push()
           }
         }
+      }
+    }
+
+    stage('Check Access') {
+      steps {
+        sh 'kubectl get pods -n default'
       }
     }
 
