@@ -16,6 +16,7 @@ spec:
     spec:
       containers:
       - name: spring-boot-app
-        image: josearaujojr/ultimate-cicd:latest  # <--- será sobrescrito via kubectl
+        image: josearaujojr/ultimate-cicd:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080

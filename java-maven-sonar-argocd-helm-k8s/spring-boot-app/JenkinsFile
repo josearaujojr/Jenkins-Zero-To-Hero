@@ -39,7 +39,7 @@ pipeline {
 
     stage('Build and Push Docker Image') {
       environment {
-        DOCKER_IMAGE = "josearaujojr/ultimate-cicd:${BUILD_NUMBER}"
+        DOCKER_IMAGE = "josearaujojr/ultimate-cicd:latest"
         REGISTRY_CREDENTIALS = credentials('docker-cred')
       }
       steps {
@@ -62,8 +62,11 @@ pipeline {
     stage('Deploy to Kubernetes') {
       steps {
         sh '''
+          echo Aplicando manifest...
           kubectl apply -f java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml -n default
-          kubectl set image deployment/spring-boot-app spring-boot-app=josearaujojr/ultimate-cicd:${BUILD_NUMBER} -n default
+
+          echo Forçando pull da imagem latest...
+          kubectl rollout restart deployment/spring-boot-app -n default
         '''
       }
     }
